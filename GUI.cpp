@@ -145,7 +145,7 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_rotateSlider1 = new wxSlider( this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	fgSizer2->Add( m_rotateSlider1, 0, wxALL, 5 );
 
-	m_rotateVal1 = new wxStaticText( this, wxID_ANY, wxT("Warto\u015B\u0107"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rotateVal1 = new wxStaticText( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rotateVal1->Wrap( -1 );
 	fgSizer2->Add( m_rotateVal1, 0, wxALL, 5 );
 
@@ -156,7 +156,7 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_rotateSlider2 = new wxSlider( this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	fgSizer2->Add( m_rotateSlider2, 0, wxALL, 5 );
 
-	m_rotateVal2 = new wxStaticText( this, wxID_ANY, wxT("Warto\u015B\u0107"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rotateVal2 = new wxStaticText( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rotateVal2->Wrap( -1 );
 	fgSizer2->Add( m_rotateVal2, 0, wxALL, 5 );
 
@@ -167,7 +167,7 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_rotateSlider3 = new wxSlider( this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	fgSizer2->Add( m_rotateSlider3, 0, wxALL, 5 );
 
-	m_rotateVal3 = new wxStaticText( this, wxID_ANY, wxT("Warto\u015B\u0107"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rotateVal3 = new wxStaticText( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rotateVal3->Wrap( -1 );
 	fgSizer2->Add( m_rotateVal3, 0, wxALL, 5 );
 
@@ -187,6 +187,7 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->Centre( wxBOTH );
 
 	// Connect Events
+	m_panel->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( MyFrame1::m_panelRepaint ), NULL, this);
 	m_option1->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option1OnRadioButton ), NULL, this );
 	m_option2->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option2OnRadioButton ), NULL, this );
 	m_option3->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option3OnRadioButton ), NULL, this );
@@ -231,6 +232,7 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 MyFrame1::~MyFrame1()
 {
 	// Disconnect Events
+	m_panel->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( MyFrame1::m_panelRepaint ), NULL, this);
 	m_option1->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option1OnRadioButton ), NULL, this );
 	m_option2->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option2OnRadioButton ), NULL, this );
 	m_option3->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option3OnRadioButton ), NULL, this );

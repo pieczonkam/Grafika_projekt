@@ -70,6 +70,7 @@ class MyFrame1 : public wxFrame
 		wxStaticText* m_rotateVal3;
 
 		// Virtual event handlers, overide them in your derived class
+		virtual void m_panelRepaint( wxUpdateUIEvent& event ) { event.Skip(); }
 		virtual void m_option1OnRadioButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_option2OnRadioButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_option3OnRadioButton( wxCommandEvent& event ) { event.Skip(); }
