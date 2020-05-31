@@ -134,7 +134,10 @@ void GUIMyFrame1::Repaint()
 	wxClientDC dc1(m_panel);
 	wxBufferedDC dc(&dc1);
 
-	dc.SetBackground(wxBrush(RGB(255, 255, 255)));
+
+	dc.SetBackground(wxBrush(wxColor(255, 255, 255)));
+
+
 	dc.Clear();
 
 	std::vector<Vector> axis;
