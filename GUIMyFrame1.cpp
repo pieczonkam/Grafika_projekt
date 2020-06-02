@@ -73,16 +73,19 @@ void GUIMyFrame1::m_option3OnRadioButton( wxCommandEvent& event )
 
 void GUIMyFrame1::m_paramCtrl1OnText( wxCommandEvent& event )
 {
+	m_paramCtrl1->GetValue().ToDouble(&phi);
 	Repaint();
 }
 
 void GUIMyFrame1::m_paramCtrl2OnText( wxCommandEvent& event )
 {
+	m_paramCtrl2->GetValue().ToDouble(&teta);
 	Repaint();
 }
 
 void GUIMyFrame1::m_paramCtrl3OnText( wxCommandEvent& event )
 {
+	m_paramCtrl3->GetValue().ToDouble(&r);
 	Repaint();
 }
 
@@ -134,7 +137,7 @@ void GUIMyFrame1::Repaint()
 	wxClientDC dc1(m_panel);
 	wxBufferedDC dc(&dc1);
 
-	dc.SetBackground(wxBrush(wxColour(255, 255, 255)));
+	dc.SetBackground(wxBrush(wxColor(255, 255, 255)));
 	dc.Clear();
 
 	std::vector<Vector> axis;

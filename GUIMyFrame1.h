@@ -34,6 +34,9 @@ class GUIMyFrame1 : public MyFrame1
 		void m_rotateSlider1OnScroll( wxScrollEvent& event );
 		void m_rotateSlider2OnScroll( wxScrollEvent& event );
 		void m_rotateSlider3OnScroll( wxScrollEvent& event );
+		double r = 0;
+		double phi = 0;
+		double teta = 0;
 	public:
 		/** Constructor */
 		GUIMyFrame1( wxWindow* parent );
