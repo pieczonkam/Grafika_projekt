@@ -193,19 +193,46 @@ void GUIMyFrame1::Repaint()
 		dc.DrawLine(begin.Get(0), begin.Get(1), end.Get(0), end.Get(1));
 	}
 
+	// double rot_x = m_rotateSlider1->GetValue();
+	// double rot_y = m_rotateSlider2->GetValue();
+	// double rot_z = m_rotateSlider3->GetValue();
+
+	// int w, h;
+	// m_panel->GetSize(&w, &h);
+	// double width = (double)w;
+	// double height = (double)h;
+	// double depth = -2.0f;
+
+	// Matrix rotation = Perspective(rot_x, rot_y, rot_z);
+	// Matrix persp = Perspective(width, height, depth);
+
+	// std::vector<std::pair<Vector, wxColour>> pts = getPoints();
+
+	// for(auto& v : pts) {
+	// 	dc.SetPen(wxPen(v.second));
+
+	// 	Vector pt{rotation*v.first};
+	// 	pt=persp*pt;
+
+	// 	dc.DrawPoint(pt.Get(0), pt.Get(1));
+	// }
+
 }
 
 
 std::vector<std::pair<Vector, wxColour>> GUIMyFrame1::getPoints() const {
 	std::vector<std::pair<Vector, wxColour>> points;
+	if(teta<1 || phi<1)
+		return points;
+
 	int nTheta = 360/teta;
 	int nPhi = 180/phi;
 	points.reserve(nPhi*nTheta);
 
 	for(int i=0; i<nTheta; ++i) {
-		for(int j=0; i<nPhi; ++j) {
+		for(int j=0; j<nPhi; ++j) {
 
-			double fVal = 0;
+			double fVal = 1;
 
 			switch(funNr()) {
 				case 1:
@@ -233,7 +260,7 @@ std::vector<std::pair<Vector, wxColour>> GUIMyFrame1::getPoints() const {
 			points.push_back(pt);
 		}
 	}
-
+	std::cout << points.size() << "points\n";
 	return points;
 }
 
