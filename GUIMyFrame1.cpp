@@ -1,6 +1,4 @@
 #include "GUIMyFrame1.h"
-#include "Transformation.h"
-#include <vector>
 
 GUIMyFrame1::GUIMyFrame1( wxWindow* parent )
 :
@@ -198,3 +196,54 @@ void GUIMyFrame1::Repaint()
 }
 
 
+std::vector<std::pair<Vector, wxColour>> GUIMyFrame1::getPoints() const {
+	std::vector<std::pair<Vector, wxColour>> points;
+	int nTheta = 360/teta;
+	int nPhi = 180/phi;
+	points.reserve(nPhi*nTheta);
+
+	for(int i=0; i<nTheta; ++i) {
+		for(int j=0; i<nPhi; ++j) {
+
+			double fVal = 0;
+
+			switch(funNr()) {
+				case 1:
+					/// assign f1
+					break;
+				case 2:
+					/// assign f2
+					break;
+				case 3:
+					/// assign f3
+					break;
+				default:
+					break;
+			}
+
+
+			double x = fVal*cos(i*teta)*sin(j*phi);
+			double y = fVal*sin(i*teta)*sin(j*phi);
+			double z = fVal      	   *cos(j*phi);
+			
+			std::pair<Vector, wxColour> pt;
+			pt.first = Vector{x, y, z};
+			pt.second = mapToColour(.5);
+		
+			points.push_back(pt);
+		}
+	}
+
+	return points;
+}
+
+int GUIMyFrame1::funNr() const {
+	if(m_option1->GetValue())
+		return 1;
+	if(m_option2->GetValue())
+		return 2;
+	if(m_option3->GetValue())
+		return 3;
+
+	return 0;
+}
