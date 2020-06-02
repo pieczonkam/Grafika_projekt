@@ -19,6 +19,11 @@ double Vector::Get(int i) const
 	return data[i];
 }
 
+double Vector::Length() const
+{
+	return sqrt(pow(data[0], 2) + pow(data[1], 2) + pow(data[2], 2));
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 Matrix::Matrix()
 {
@@ -75,34 +80,27 @@ Vector operator*(const Matrix& mat, const Vector& vec)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
-Matrix Rotate(double rotation_x, double rotation_y, double rotation_z)
+Matrix Rotate(const Vector& vec, double angle)
 {
-	Matrix rotateX;
-	Matrix rotateY;
-	Matrix rotateZ;
+	Matrix rotate;
+	angle = angle * M_PI / 180.0f;
+	double u = vec.Get(0);
+	double v = vec.Get(1);
+	double w = vec.Get(2);
+	double u2 = pow(u, 2);
+	double v2 = pow(v, 2);
+	double w2 = pow(w, 2);
+	double L = u2 + v2 + w2;
+	rotate.Set(0, 0, (u2 + (v2 + w2) * cos(angle)) / L);
+	rotate.Set(0, 1, (u * v * (1 - cos(angle)) - w * sqrt(L) * sin(angle)) / L);
+	rotate.Set(0, 2, (u * w * (1 - cos(angle)) + v * sqrt(L) * sin(angle)) / L);
+	rotate.Set(1, 0, (u * v * (1 - cos(angle)) + w * sqrt(L) * sin(angle)) / L);
+	rotate.Set(1, 1, (v2 + (u2 + w2) * cos(angle)) / L);
+	rotate.Set(1, 2, (v * w * (1 - cos(angle)) - u * sqrt(L) * sin(angle)) / L);
+	rotate.Set(2, 0, (u * w * (1 - cos(angle)) - v * sqrt(L) * sin(angle)) / L);
+	rotate.Set(2, 1, (v * w * (1 - cos(angle)) + u * sqrt(L) * sin(angle)) / L);
+	rotate.Set(2, 2, (w2 + (u2 + v2) * cos(angle)) / L);
 
-	double alpha = -rotation_x * M_PI / 180.0f;
-	rotateX.Set(0, 0, 1.0f);
-	rotateX.Set(1, 1, cos(alpha));
-	rotateX.Set(1, 2, -sin(alpha));
-	rotateX.Set(2, 1, sin(alpha));
-	rotateX.Set(2, 2, cos(alpha));
-
-	alpha = -rotation_y * M_PI / 180.0f;
-	rotateY.Set(0, 0, cos(alpha));
-	rotateY.Set(0, 2, sin(alpha));
-	rotateY.Set(1, 1, 1.0f);
-	rotateY.Set(2, 0, -sin(alpha));
-	rotateY.Set(2, 2, cos(alpha));
-
-	alpha = -rotation_z * M_PI / 180.0f;
-	rotateZ.Set(0, 0, cos(alpha));
-	rotateZ.Set(0, 1, -sin(alpha));
-	rotateZ.Set(1, 0, sin(alpha));
-	rotateZ.Set(1, 1, cos(alpha));
-	rotateZ.Set(2, 2, 1.0f);
-
-	Matrix rotate = rotateX * rotateY * rotateZ;
 	return rotate;
 }
 

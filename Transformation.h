@@ -18,6 +18,8 @@ class Vector
 
 		double Get(int i) const;
 
+		double Length() const;
+
 	private:
 
 		std::array<double, 4> data;
@@ -44,6 +46,6 @@ class Matrix
 //////////////////////////////////////////////////////////////////////////////////////
 Vector operator*(const Matrix& mat, const Vector& vec);
 
-Matrix Rotate(double rotate_x, double rotate_y, double rotate_z);
+Matrix Rotate(const Vector &vec, double angle);
 
 Matrix Perspective(double width, double height, double depth);

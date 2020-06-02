@@ -1,6 +1,4 @@
 #include "GUIMyFrame1.h"
-#include "Transformation.h"
-#include <vector>
 
 GUIMyFrame1::GUIMyFrame1( wxWindow* parent )
 :
@@ -19,6 +17,13 @@ MyFrame1( parent )
 	m_paramCtrl5->Disable();
 	m_paramCtrl6->Disable();
 	m_paramCtrl7->Disable();
+
+	m_axes.push_back(Vector(-1.0f, 0.0f, 0.0f));
+	m_axes.push_back(Vector(1.0f, 0.0f, 0.0f));
+	m_axes.push_back(Vector(0.0f, -1.0f, 0.0f));
+	m_axes.push_back(Vector(0.0f, 1.0f, 0.0f));
+	m_axes.push_back(Vector(0.0f, 0.0f, -1.0f));
+	m_axes.push_back(Vector(0.0, 0.0, 1.0f));
 }
 
 void GUIMyFrame1::m_panelRepaint(wxUpdateUIEvent& event)
@@ -137,30 +142,37 @@ void GUIMyFrame1::Repaint()
 	wxClientDC dc1(m_panel);
 	wxBufferedDC dc(&dc1);
 
-	dc.SetBackground(wxBrush(wxColor(255, 255, 255)));
+	dc.SetBackground(wxBrush(wxColour(255, 255, 255)));
 	dc.Clear();
 
-	std::vector<Vector> axis;
+	//Transformacje (w tym przypadku tylko rotacja)
+	double rot_x = m_rotateSlider1->GetValue();
+	double rot_y = m_rotateSlider2->GetValue();
+	double rot_z = m_rotateSlider3->GetValue();
 
-	axis.push_back(Vector(-0.5f, 0.0f, 0.0f));
-	axis.push_back(Vector(0.5f, 0.0f, 0.0f));
-	axis.push_back(Vector(0.0f, -0.5f, 0.0f));
-	axis.push_back(Vector(0.0f, 0.5f, 0.0f));
-	axis.push_back(Vector(0.0f, 0.0f, -0.5f));
-	axis.push_back(Vector(0.0, 0.0, 0.5f));
-	
 	for (int vec = 0; vec < 6; vec += 2)
 	{
-		Vector begin = axis[vec];
-		Vector end = axis[vec + 1];
+		Vector begin = m_axes[vec];
+		Vector end = m_axes[vec + 1];
 
-		//Transformacje (w tym przypadku tylko rotacja)
-		double rot_x = m_rotateSlider1->GetValue();
-		double rot_y = m_rotateSlider2->GetValue();
-		double rot_z = m_rotateSlider3->GetValue();
+		if (rot_x != m_rotX)
+		{
+			begin = Rotate(m_axes[0], rot_x - m_rotX) * begin;
+			end = Rotate(m_axes[0], rot_x - m_rotX) * end;
+		}
+		else if (rot_y != m_rotY)
+		{
+			begin = Rotate(m_axes[2], rot_y - m_rotY) * begin;
+			end = Rotate(m_axes[2], rot_y - m_rotY) * end;
+		}
+		else if (rot_z != m_rotZ)
+		{ 
+			begin = Rotate(m_axes[4], rot_z - m_rotZ) * begin;
+			end = Rotate(m_axes[4], rot_z - m_rotZ) * end;
+		}
 
-		begin = Rotate(rot_x, rot_y, rot_z) * begin;
-		end = Rotate(rot_x, rot_y, rot_z) * end;
+		m_axes[vec] = begin;
+		m_axes[vec + 1] = end;
 
 		int w, h;
 		m_panel->GetSize(&w, &h);
@@ -195,6 +207,9 @@ void GUIMyFrame1::Repaint()
 		dc.DrawLine(begin.Get(0), begin.Get(1), end.Get(0), end.Get(1));
 	}
 
+	m_rotX = rot_x;
+	m_rotY = rot_y;
+	m_rotZ = rot_z;
 }
 
 
