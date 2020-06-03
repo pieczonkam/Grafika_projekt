@@ -19,6 +19,12 @@ double Vector::Get(int i) const
 	return data[i];
 }
 
+Vector Vector::operator=(const Vector& v) const {
+	Vector ret;
+	ret.data = std::array<double,4>{v.data};
+	return ret;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 Matrix::Matrix()
 {
@@ -56,6 +62,13 @@ Matrix Matrix::operator*(const Matrix& mat) const
 
 	return result;
 }
+
+Matrix Matrix::operator=(const Matrix& m) const {
+	Matrix ret;
+	ret.data = std::array<std::array<double, 4>, 4>{m.data};
+	return ret;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 Vector operator*(const Matrix& mat, const Vector& vec)

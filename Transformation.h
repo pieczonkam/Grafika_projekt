@@ -18,6 +18,8 @@ class Vector
 
 		double Get(int i) const;
 
+		Vector operator=(const Vector&) const ;
+
 	private:
 
 		std::array<double, 4> data;
@@ -35,6 +37,8 @@ class Matrix
 		double Get(int i, int j) const;
 
 		Matrix operator*(const Matrix &mat) const;
+
+		Matrix operator=(const Matrix&) const ;
 
 	private:
 
