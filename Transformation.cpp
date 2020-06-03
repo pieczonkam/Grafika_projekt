@@ -1,6 +1,6 @@
 #include "Transformation.h"
 
-//////////////////////////////////////////////////////////////////////////////////////
+/**************************************_Vector_**************************************/
 Vector::Vector(double x, double y, double z)
 {
 	data[0] = x;
@@ -10,17 +10,6 @@ Vector::Vector(double x, double y, double z)
 }
 
 Vector::Vector(const Vector& v) : data{v.data} {}
-
-
-void Vector::Set(int i, double val)
-{
-	data[i] = val;
-}
-
-double Vector::Get(int i) const
-{
-	return data[i];
-}
 
 Vector& Vector::operator=(const Vector& v) {
 	data = std::array<double,4>{v.data};
@@ -32,7 +21,17 @@ Vector& Vector::operator=(Vector&& v) {
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+void Vector::Set(int i, double val)
+{
+	data[i] = val;
+}
+
+double Vector::Get(int i) const
+{
+	return data[i];
+}
+
+/***************************************_Matrix_***************************************/
 Matrix::Matrix()
 {
 	data[0][0] = 0.0f; data[0][1] = 0.0f; data[0][2] = 0.0f; data[0][3] = 0.0f;
@@ -42,17 +41,6 @@ Matrix::Matrix()
 }
 
 Matrix::Matrix(const Matrix& m) : data{m.data} {}
-
-
-void Matrix::Set(int i, int j, double val)
-{
-	data[i][j] = val;
-}
-
-double Matrix::Get(int i, int j) const
-{
-	return data[i][j];
-}
 
 Matrix Matrix::operator*(const Matrix& mat) const
 {
@@ -83,8 +71,18 @@ Matrix& Matrix::operator=(Matrix&& m) {
 	return *this;
 }
 
+void Matrix::Set(int i, int j, double val)
+{
+	data[i][j] = val;
+}
 
-//////////////////////////////////////////////////////////////////////////////////////
+double Matrix::Get(int i, int j) const
+{
+	return data[i][j];
+}
+
+
+/**************************************_UTILITY_**************************************/
 Vector operator*(const Matrix& mat, const Vector& vec)
 {
 	Vector result;
@@ -101,7 +99,6 @@ Vector operator*(const Matrix& mat, const Vector& vec)
 	return result;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
 Matrix Rotate(double rotation_x, double rotation_y, double rotation_z)
 {
 	Matrix rotateX;
