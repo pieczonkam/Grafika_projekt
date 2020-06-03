@@ -13,12 +13,14 @@ class Vector
 	public:
 		
 		Vector(double x = 0.0f, double y = 0.0f, double z = 0.0f);
+		Vector(const Vector&) ;
 
 		void Set(int i,  double val);
 
 		double Get(int i) const;
 
-		Vector operator=(const Vector&) const ;
+		Vector& operator=(const Vector&)  ;
+		Vector& operator=(Vector&&) ;
 
 	private:
 
@@ -31,6 +33,7 @@ class Matrix
 	public:
 
 		Matrix();
+		Matrix(const Matrix&) ;
 
 		void Set(int i, int j, double val);
 
@@ -38,7 +41,8 @@ class Matrix
 
 		Matrix operator*(const Matrix &mat) const;
 
-		Matrix operator=(const Matrix&) const ;
+		Matrix& operator=(const Matrix&) ;
+		Matrix& operator=(Matrix&&) ;
 
 	private:
 

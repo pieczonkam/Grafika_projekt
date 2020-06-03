@@ -9,6 +9,9 @@ Vector::Vector(double x, double y, double z)
 	data[3] = 1.0f;
 }
 
+Vector::Vector(const Vector& v) : data{v.data} {}
+
+
 void Vector::Set(int i, double val)
 {
 	data[i] = val;
@@ -19,10 +22,14 @@ double Vector::Get(int i) const
 	return data[i];
 }
 
-Vector Vector::operator=(const Vector& v) const {
-	Vector ret;
-	ret.data = std::array<double,4>{v.data};
-	return ret;
+Vector& Vector::operator=(const Vector& v) {
+	data = std::array<double,4>{v.data};
+	return *this;
+}
+
+Vector& Vector::operator=(Vector&& v) {
+	data = std::move(v.data);
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +40,9 @@ Matrix::Matrix()
 	data[2][0] = 0.0f; data[2][1] = 0.0f; data[2][2] = 0.0f; data[2][3] = 0.0f;
 	data[3][0] = 0.0f; data[3][1] = 0.0f; data[3][2] = 0.0f; data[3][3] = 1.0f;
 }
+
+Matrix::Matrix(const Matrix& m) : data{m.data} {}
+
 
 void Matrix::Set(int i, int j, double val)
 {
@@ -63,10 +73,14 @@ Matrix Matrix::operator*(const Matrix& mat) const
 	return result;
 }
 
-Matrix Matrix::operator=(const Matrix& m) const {
-	Matrix ret;
-	ret.data = std::array<std::array<double, 4>, 4>{m.data};
-	return ret;
+Matrix& Matrix::operator=(const Matrix& m) {
+	data = std::array<std::array<double, 4>, 4>{m.data};
+	return *this;
+}
+
+Matrix& Matrix::operator=(Matrix&& m) {
+	data = std::move(m.data);
+	return *this;
 }
 
 
