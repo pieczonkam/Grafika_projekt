@@ -42,10 +42,10 @@ class GUIMyFrame1 : public MyFrame1
 		double r = 0;
 		double phi = 0;
 		double teta = 0;
-		
+		std::vector<std::pair<Vector, wxColour>> points;
 		int funNr() const ;
 
-		std::vector<std::pair<Vector, wxColour>> getPoints() const ;
+		void getPoints() ;
 	public:
 		/** Constructor */
 		GUIMyFrame1( wxWindow* parent );

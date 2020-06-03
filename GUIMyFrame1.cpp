@@ -193,37 +193,40 @@ void GUIMyFrame1::Repaint()
 		dc.DrawLine(begin.Get(0), begin.Get(1), end.Get(0), end.Get(1));
 	}
 
-	// double rot_x = m_rotateSlider1->GetValue();
-	// double rot_y = m_rotateSlider2->GetValue();
-	// double rot_z = m_rotateSlider3->GetValue();
+	double rot_x = m_rotateSlider1->GetValue();
+	double rot_y = m_rotateSlider2->GetValue();
+	double rot_z = m_rotateSlider3->GetValue();
 
-	// int w, h;
-	// m_panel->GetSize(&w, &h);
-	// double width = (double)w;
-	// double height = (double)h;
-	// double depth = -2.0f;
+	int w, h;
+	m_panel->GetSize(&w, &h);
+	double width = (double)w;
+	double height = (double)h;
+	double depth = -2.0f;
 
-	// Matrix rotation = Perspective(rot_x, rot_y, rot_z);
-	// Matrix persp = Perspective(width, height, depth);
+	Matrix rotation{Rotate(rot_x, rot_y, rot_z)};
+	Matrix persp{Perspective(width, height, depth)};
 
-	// std::vector<std::pair<Vector, wxColour>> pts = getPoints();
+	getPoints();
 
-	// for(auto& v : pts) {
-	// 	dc.SetPen(wxPen(v.second));
+	for(const auto& v : points) {
+		// std::cout << v.first.Get(0) << " " << v.first.Get(1) << " " << v.first.Get(2) << "\n";
 
-	// 	Vector pt{rotation*v.first};
-	// 	pt=persp*pt;
+		Vector pt{rotation*v.first};
+		// std::cout << "x" << pt.Get(0) << " y" << pt.Get(1) << "\n";
+		pt=persp*pt;
 
-	// 	dc.DrawPoint(pt.Get(0), pt.Get(1));
-	// }
+
+		dc.SetPen(wxPen(v.second));
+		dc.DrawPoint(pt.Get(0), pt.Get(1));
+	}
 
 }
 
 
-std::vector<std::pair<Vector, wxColour>> GUIMyFrame1::getPoints() const {
-	std::vector<std::pair<Vector, wxColour>> points;
+void GUIMyFrame1::getPoints() {
+	points.clear();
 	if(teta<1 || phi<1)
-		return points;
+		return;
 
 	int nTheta = 360/teta;
 	int nPhi = 180/phi;
@@ -260,8 +263,7 @@ std::vector<std::pair<Vector, wxColour>> GUIMyFrame1::getPoints() const {
 			points.push_back(pt);
 		}
 	}
-	std::cout << points.size() << "points\n";
-	return points;
+	return;
 }
 
 int GUIMyFrame1::funNr() const {
