@@ -233,7 +233,7 @@ void GUIMyFrame1::getPoints() {
 		for(int j{0}; j<phi; ++j) {
 			double aPhi{ -n_PI/2 + j*dPhi };
 
-			double fVal{1};
+			double fVal{.5};
 
 			switch(funNr()) {
 				case 1:
@@ -252,7 +252,7 @@ void GUIMyFrame1::getPoints() {
 			/// spherical to cartesian coordinates
 			double x{	fVal*cos(aTheta)*sin(aPhi) 	};
 			double y{	fVal*sin(aTheta)*sin(aPhi) 	};
-			double z{	fVal      	   *cos(aPhi)	};
+			double z{	fVal      	    *cos(aPhi)	};
 			
 			/// preparing and pushing point to vector
 			std::pair<Vector, wxColour> pt;
