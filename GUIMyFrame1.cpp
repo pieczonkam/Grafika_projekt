@@ -146,28 +146,31 @@ void GUIMyFrame1::Repaint()
 	axis.push_back(Vector(0.0f, 0.5f, 0.0f));
 	axis.push_back(Vector(0.0f, 0.0f, -0.5f));
 	axis.push_back(Vector(0.0, 0.0, 0.5f));
-	
+
+	//Transformacje (w tym przypadku tylko rotacja)
+	double rot_x = m_rotateSlider1->GetValue();
+	double rot_y = m_rotateSlider2->GetValue();
+	double rot_z = m_rotateSlider3->GetValue();
+	Matrix rotation{Rotate(rot_x, rot_y, rot_z)};
+
+	//Transformacje (w tym przypadku perspektywa)
+	int w, h;
+	m_panel->GetSize(&w, &h);
+	double width = (double)w;
+	double height = (double)h;
+	double depth = -2.0f;
+	Matrix perspective{Perspective(width, height, depth)};
+
 	for (int vec = 0; vec < 6; vec += 2)
 	{
 		Vector begin = axis[vec];
 		Vector end = axis[vec + 1];
 
-		//Transformacje (w tym przypadku tylko rotacja)
-		double rot_x = m_rotateSlider1->GetValue();
-		double rot_y = m_rotateSlider2->GetValue();
-		double rot_z = m_rotateSlider3->GetValue();
+		begin = rotation * begin;
+		end = rotation * end;
 
-		begin = Rotate(rot_x, rot_y, rot_z) * begin;
-		end = Rotate(rot_x, rot_y, rot_z) * end;
-
-		int w, h;
-		m_panel->GetSize(&w, &h);
-		double width = (double)w;
-		double height = (double)h;
-		double depth = -2.0f;
-
-		begin = Perspective(width, height, depth) * begin;
-		end = Perspective(width, height, depth) * end;
+		begin = perspective * begin;
+		end = perspective * end;
 
 		//Normowanie wektorow
 		for (int i = 0; i < 3; ++i)
@@ -193,30 +196,19 @@ void GUIMyFrame1::Repaint()
 		dc.DrawLine(begin.Get(0), begin.Get(1), end.Get(0), end.Get(1));
 	}
 
-	double rot_x = m_rotateSlider1->GetValue();
-	double rot_y = m_rotateSlider2->GetValue();
-	double rot_z = m_rotateSlider3->GetValue();
 
-	int w, h;
-	m_panel->GetSize(&w, &h);
-	double width = (double)w;
-	double height = (double)h;
-	double depth = -2.0f;
-
-	Matrix rotation{Rotate(rot_x, rot_y, rot_z)};
-	Matrix persp{Perspective(width, height, depth)};
-
+	/// updating points
 	getPoints();
 
+	/// iterating over points to draw
 	for(const auto& v : points) {
-		// std::cout << v.first.Get(0) << " " << v.first.Get(1) << " " << v.first.Get(2) << "\n";
 
+		/// calculating on screen position of the point
 		Vector pt{rotation*v.first};
-		// std::cout << "x" << pt.Get(0) << " y" << pt.Get(1) << "\n";
-		pt=persp*pt;
+		pt = perspective*pt;
 
-
-		dc.SetPen(wxPen(v.second));
+		/// setting colour and drawing
+		dc.SetPen(wxPen{v.second});
 		dc.DrawPoint(pt.Get(0), pt.Get(1));
 	}
 
@@ -228,17 +220,20 @@ void GUIMyFrame1::getPoints() {
 	if(teta<1 || phi<1)
 		return;
 
+	/// preallocating memory
 	points.reserve(phi*teta);
 
-	double dTheta = 2*n_PI/teta;
-	double dPhi = 2*n_PI/phi;
+	/// iteration steps
+	double dTheta{ 	2*n_PI/teta };
+	double dPhi{ 	2*n_PI/phi 	};
 
-	for(int i=0; i<teta; ++i) {
-		double aTheta = i*dTheta;
-		for(int j=0; j<phi; ++j) {
-			double aPhi = -n_PI/2 + j*dPhi;
+	for(int i{0}; i<teta; ++i) {
+		double aTheta{ i*dTheta };
 
-			double fVal = 1;
+		for(int j{0}; j<phi; ++j) {
+			double aPhi{ -n_PI/2 + j*dPhi };
+
+			double fVal{1};
 
 			switch(funNr()) {
 				case 1:
@@ -254,13 +249,16 @@ void GUIMyFrame1::getPoints() {
 					break;
 			}
 
-
-			double x = fVal*cos(aTheta)*sin(aPhi);
-			double y = fVal*sin(aTheta)*sin(aPhi);
-			double z = fVal      	   *cos(aPhi);
+			/// spherical to cartesian coordinates
+			double x{	fVal*cos(aTheta)*sin(aPhi) 	};
+			double y{	fVal*sin(aTheta)*sin(aPhi) 	};
+			double z{	fVal      	   *cos(aPhi)	};
 			
+			/// preparing and pushing point to vector
 			std::pair<Vector, wxColour> pt;
-			pt.first = Vector{x, y, z};
+			pt.first.Set(0, x);
+			pt.first.Set(1, y);
+			pt.first.Set(2, z);
 			pt.second = mapToColour(.5);
 		
 			points.push_back(pt);
@@ -269,12 +267,13 @@ void GUIMyFrame1::getPoints() {
 	return;
 }
 
+/// querying which function is chosen
 int GUIMyFrame1::funNr() const {
 	if(m_option1->GetValue())
 		return 1;
-	if(m_option2->GetValue())
+	else if(m_option2->GetValue())
 		return 2;
-	if(m_option3->GetValue())
+	else if(m_option3->GetValue())
 		return 3;
 
 	return 0;
