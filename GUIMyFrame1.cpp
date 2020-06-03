@@ -228,12 +228,15 @@ void GUIMyFrame1::getPoints() {
 	if(teta<1 || phi<1)
 		return;
 
-	int nTheta = 360/teta;
-	int nPhi = 180/phi;
-	points.reserve(nPhi*nTheta);
+	points.reserve(phi*teta);
 
-	for(int i=0; i<nTheta; ++i) {
-		for(int j=0; j<nPhi; ++j) {
+	double dTheta = 2*n_PI/teta;
+	double dPhi = 2*n_PI/phi;
+
+	for(int i=0; i<teta; ++i) {
+		double aTheta = i*dTheta;
+		for(int j=0; j<phi; ++j) {
+			double aPhi = -n_PI/2 + j*dPhi;
 
 			double fVal = 1;
 
@@ -252,9 +255,9 @@ void GUIMyFrame1::getPoints() {
 			}
 
 
-			double x = fVal*cos(i*teta)*sin(j*phi);
-			double y = fVal*sin(i*teta)*sin(j*phi);
-			double z = fVal      	   *cos(j*phi);
+			double x = fVal*cos(aTheta)*sin(aPhi);
+			double y = fVal*sin(aTheta)*sin(aPhi);
+			double z = fVal      	   *cos(aPhi);
 			
 			std::pair<Vector, wxColour> pt;
 			pt.first = Vector{x, y, z};
