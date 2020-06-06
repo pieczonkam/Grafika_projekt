@@ -11,6 +11,10 @@ Vector::Vector(double x, double y, double z)
 
 Vector::Vector(const Vector& v) : data{v.data} {}
 
+double& Vector::operator()(int a) {
+	return data[a];
+}
+
 Vector& Vector::operator=(const Vector& v) {
 	data = std::array<double,4>{v.data};
 	return *this;
@@ -41,6 +45,11 @@ Matrix::Matrix()
 }
 
 Matrix::Matrix(const Matrix& m) : data{m.data} {}
+
+double& Matrix::operator()(int a, int b) {
+	return data[a][b];
+}
+
 
 Matrix Matrix::operator*(const Matrix& mat) const
 {

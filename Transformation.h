@@ -17,6 +17,7 @@ class Vector
 		Vector(const Vector&) ;
 
 		/// overloaded operators
+		double& operator()(int) ;
 		Vector& operator=(const Vector&)  ;
 		Vector& operator=(Vector&&) ;
 
@@ -43,6 +44,7 @@ class Matrix
 		Matrix(const Matrix&) ;
 
 		/// overloaded operators
+		double& operator()(int,int) ;
 		Matrix operator*(const Matrix &mat) const;
 		Matrix& operator=(const Matrix&) ;
 		Matrix& operator=(Matrix&&) ;

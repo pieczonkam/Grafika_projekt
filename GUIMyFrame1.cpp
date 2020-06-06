@@ -290,9 +290,9 @@ void GUIMyFrame1::getPoints() {
 			
 			/// preparing and pushing point to vector
 			std::pair<Vector, wxColour> pt;
-			pt.first.Set(0, x);
-			pt.first.Set(1, y);
-			pt.first.Set(2, z);
+			pt.first(0) = x;
+			pt.first(1) = y;
+			pt.first(2) = z;
 			pt.second = utility::mapToColour(mapped);
 
 			points.push_back(std::move(pt));
