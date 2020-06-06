@@ -227,41 +227,76 @@ void GUIMyFrame1::getPoints() {
 	double dTheta{ 	2*n_PI/teta };
 	double dPhi{ 	2*n_PI/phi 	};
 
+	double min{1e8}, max{0};
+	
+	for(int i{0}; i<teta; ++i) {
+		double aTheta{ i*dTheta };
+		for(int j{0}; j<phi; ++j) {
+			double aPhi{ -n_PI/2 + j*dPhi };
+
+			double fVal{0.0};
+			switch(funNr()) {
+				case 1:
+					fVal = F1(aTheta, aPhi, r);
+					break;
+				case 2:
+					fVal = F2(aTheta, aPhi, r);
+					break;
+				case 3:
+					fVal = F3(aTheta, aPhi, r);
+					break;
+				default:
+					break;
+			}
+
+			if(fVal < min)
+				min = fVal;
+			else if(fVal > max)
+				max = fVal;
+		}
+	}
+	// std::cout << "min/max : " << min << "/" << max << '\n';
 	for(int i{0}; i<teta; ++i) {
 		double aTheta{ i*dTheta };
 
 		for(int j{0}; j<phi; ++j) {
 			double aPhi{ -n_PI/2 + j*dPhi };
 
-			double fVal{.5};
-
+			double fVal{0.0};
 			switch(funNr()) {
 				case 1:
-					/// assign f1
+					fVal = F1(aTheta, aPhi, r);
 					break;
 				case 2:
-					/// assign f2
+					fVal = F2(aTheta, aPhi, r);
 					break;
 				case 3:
-					/// assign f3
+					fVal = F3(aTheta, aPhi, r);
 					break;
 				default:
 					break;
 			}
 
 			/// spherical to cartesian coordinates
-			double x{	fVal*cos(aTheta)*sin(aPhi) 	};
-			double y{	fVal*sin(aTheta)*sin(aPhi) 	};
-			double z{	fVal      	    *cos(aPhi)	};
+			double mapped{ utility::map(fVal, min, max, 0, 1) };
+			double x{	0.5*mapped*cos(aTheta)*sin(aPhi) 	};
+			double y{	0.5*mapped*sin(aTheta)*sin(aPhi) 	};
+			double z{	0.5*mapped      	    *cos(aPhi)	};
 			
 			/// preparing and pushing point to vector
 			std::pair<Vector, wxColour> pt;
 			pt.first.Set(0, x);
 			pt.first.Set(1, y);
 			pt.first.Set(2, z);
-			pt.second = mapToColour(.5);
-		
-			points.push_back(pt);
+			// pt.second = utility::mapToColour(i/teta);
+			pt.second = utility::mapToColour(mapped);
+			// double mod{(pt.first.Get(0)*pt.first.Get(0) + pt.first.Get(1)*pt.first.Get(1) + pt.first.Get(2)*pt.first.Get(2))/mapped};
+			// std::for_each(std::begin(points), std::end(points), [mod](std::pair<Vector, wxColour>& p){
+			// 	p.first.Set(0, p.first.Get(0)/mod);
+			// 	p.first.Set(1, p.first.Get(1)/mod);
+			// 	p.first.Set(2, p.first.Get(2)/mod);
+			// });
+			points.push_back(std::move(pt));
 		}
 	}
 	return;
@@ -277,4 +312,14 @@ int GUIMyFrame1::funNr() const {
 		return 3;
 
 	return 0;
+}
+
+double GUIMyFrame1::F1(double _theta, double _phi, double _r) const {
+	return fabs(cos(_theta) + sin(_phi)*_r);
+}
+double GUIMyFrame1::F2(double _theta, double _phi, double _r) const {
+	return fabs(sin(_phi)*cos(_theta) + sin(_phi)*_r + cos(_theta));
+}
+double GUIMyFrame1::F3(double _theta, double _phi, double _r) const {
+	return fabs(_r*_r*cos(_theta) + sin(_phi)*_r*cos(_phi));
 }
