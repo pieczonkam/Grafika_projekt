@@ -209,6 +209,8 @@ void GUIMyFrame1::Repaint()
 
 		/// setting colour and drawing
 		dc.SetPen(wxPen{v.second});
+
+		/// it's slow as hell so have to look into ways of drawing all points in a single function to speed this up
 		dc.DrawPoint(pt.Get(0), pt.Get(1));
 	}
 
@@ -229,6 +231,8 @@ void GUIMyFrame1::getPoints() {
 
 	double min{1e8}, max{0};
 	
+	/// finding min/max of a function
+	/// could maybe try do do something with analysis to avoid iterating twice like this
 	for(int i{0}; i<teta; ++i) {
 		double aTheta{ i*dTheta };
 		for(int j{0}; j<phi; ++j) {
@@ -255,7 +259,8 @@ void GUIMyFrame1::getPoints() {
 				max = fVal;
 		}
 	}
-	// std::cout << "min/max : " << min << "/" << max << '\n';
+	
+	/// creating points and assigning them place in space
 	for(int i{0}; i<teta; ++i) {
 		double aTheta{ i*dTheta };
 
@@ -288,14 +293,8 @@ void GUIMyFrame1::getPoints() {
 			pt.first.Set(0, x);
 			pt.first.Set(1, y);
 			pt.first.Set(2, z);
-			// pt.second = utility::mapToColour(i/teta);
 			pt.second = utility::mapToColour(mapped);
-			// double mod{(pt.first.Get(0)*pt.first.Get(0) + pt.first.Get(1)*pt.first.Get(1) + pt.first.Get(2)*pt.first.Get(2))/mapped};
-			// std::for_each(std::begin(points), std::end(points), [mod](std::pair<Vector, wxColour>& p){
-			// 	p.first.Set(0, p.first.Get(0)/mod);
-			// 	p.first.Set(1, p.first.Get(1)/mod);
-			// 	p.first.Set(2, p.first.Get(2)/mod);
-			// });
+
 			points.push_back(std::move(pt));
 		}
 	}
@@ -315,11 +314,11 @@ int GUIMyFrame1::funNr() const {
 }
 
 double GUIMyFrame1::F1(double _theta, double _phi, double _r) const {
-	return fabs(cos(_theta) + sin(_phi)*_r);
+	return cos(_theta) + sin(_phi)*_r;
 }
 double GUIMyFrame1::F2(double _theta, double _phi, double _r) const {
-	return fabs(sin(_phi)*cos(_theta) + sin(_phi)*_r + cos(_theta));
+	return sin(_phi)*cos(_theta) + sin(_phi)*_r + cos(_theta);
 }
 double GUIMyFrame1::F3(double _theta, double _phi, double _r) const {
-	return fabs(_r*_r*cos(_theta) + sin(_phi)*_r*cos(_phi));
+	return _r*_r*cos(_theta) + sin(_phi)*_r*cos(_phi);
 }
