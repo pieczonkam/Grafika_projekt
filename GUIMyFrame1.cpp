@@ -517,8 +517,6 @@ void GUIMyFrame1::getPoints()
 			}
 		}
 
-		m_descriptionText->SetLabel(wxString::Format(wxT("%f"), max));
-
 		/// creating points and assigning them place in space
 		for (int i{ 0 }; i < m_theta; ++i) {
 			double aTheta{ i * dTheta };
