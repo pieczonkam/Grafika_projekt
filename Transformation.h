@@ -12,13 +12,18 @@ class Vector
 {
 	public:
 		
+		/// constructors
 		Vector(double x = 0.0f, double y = 0.0f, double z = 0.0f);
+		Vector(const Vector&);
 
-		void Set(int i,  double val);
+		/// overloaded operators
+		double& operator()(int);
+		double operator()(int) const;
+		Vector& operator=(const Vector&);
+		Vector& operator=(Vector&&);
 
-		double Get(int i) const;
-
-		double Length() const;
+		/// function normalizing given vector
+		void Normalize();
 
 	private:
 
@@ -30,13 +35,17 @@ class Matrix
 {
 	public:
 
-		Matrix();
+		// constructors
+		Matrix(double diag = 0.0f);
+		Matrix(const Matrix&);
 
-		void Set(int i, int j, double val);
-
-		double Get(int i, int j) const;
-
-		Matrix operator*(const Matrix &mat) const;
+		/// overloaded operators
+		double& operator()(int, int);
+		double operator()(int, int) const;
+		Matrix operator*(const Matrix&) const;
+		Matrix& operator=(const Matrix&);
+		Matrix& operator=(Matrix&&);
+		bool operator==(const Matrix&) const;
 
 	private:
 
@@ -44,8 +53,12 @@ class Matrix
 };
 
 //////////////////////////////////////////////////////////////////////////////////////
-Vector operator*(const Matrix& mat, const Vector& vec);
 
-Matrix Rotate(const Vector &vec, double angle);
+/// overloaded Matrix*Vector operation
+Vector operator*(const Matrix&, const Vector&);
 
-Matrix Perspective(double width, double height, double depth);
+/// function constructing rotation matrix
+Matrix Rotate(const Vector&, double);
+
+/// function constructing perspective matrix
+Matrix Perspective(double, double, double);

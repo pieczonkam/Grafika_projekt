@@ -52,17 +52,23 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_option1 = new wxRadioButton( this, wxID_ANY, wxT("Wykres 1"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_option1 = new wxRadioButton( this, wxID_ANY, wxT("Spos\u00F3b 1"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_option1, 0, wxALL, 5 );
 
-	m_option2 = new wxRadioButton( this, wxID_ANY, wxT("Wykres 2"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_option2 = new wxRadioButton( this, wxID_ANY, wxT("Spos\u00F3b 2"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_option2, 0, wxALL, 5 );
 
-	m_option3 = new wxRadioButton( this, wxID_ANY, wxT("Wykres 3"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_option3 = new wxRadioButton( this, wxID_ANY, wxT("Spos\u00F3b 3"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_option3, 0, wxALL, 5 );
 
 
 	bSizer6->Add( bSizer8, 0, wxALL|wxEXPAND, 5 );
+
+	wxString m_funChoiceChoices[] = { wxT("cos(\u03B8) + r * sin(\u03C6)"), wxT("(e^r * sin(\u03C6) * cos(\u03B8)) / (r^2 + 1)"), wxT("r^3 * cos(\u03B8) * sin(\u03C6) * cos(\u03C6)") };
+	int m_funChoiceNChoices = sizeof( m_funChoiceChoices ) / sizeof( wxString );
+	m_funChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_funChoiceNChoices, m_funChoiceChoices, 0 );
+	m_funChoice->SetSelection( 0 );
+	bSizer6->Add( m_funChoice, 0, wxALIGN_CENTER|wxALL, 5 );
 
 	wxFlexGridSizer* fgSizer1;
 	fgSizer1 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -73,49 +79,49 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_paramText1->Wrap( -1 );
 	fgSizer1->Add( m_paramText1, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl1 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl1, 0, wxALL, 5 );
 
 	m_paramText2 = new wxStaticText( this, wxID_ANY, wxT("il. pkt. \u03B8"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_paramText2->Wrap( -1 );
 	fgSizer1->Add( m_paramText2, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl2 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl2, 0, wxALL, 5 );
 
 	m_paramText3 = new wxStaticText( this, wxID_ANY, wxT("r"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_paramText3->Wrap( -1 );
 	fgSizer1->Add( m_paramText3, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl3 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl3, 0, wxALL, 5 );
 
 	m_paramText4 = new wxStaticText( this, wxID_ANY, wxT("const"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_paramText4->Wrap( -1 );
 	fgSizer1->Add( m_paramText4, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl4 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl4 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl4, 0, wxALL, 5 );
 
 	m_paramText5 = new wxStaticText( this, wxID_ANY, wxT("\u03B5"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_paramText5->Wrap( -1 );
 	fgSizer1->Add( m_paramText5, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl5 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl5 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl5, 0, wxALL, 5 );
 
 	m_paramText6 = new wxStaticText( this, wxID_ANY, wxT("\u0394r"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_paramText6->Wrap( -1 );
 	fgSizer1->Add( m_paramText6, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl6 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl6 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl6, 0, wxALL, 5 );
 
 	m_paramText7 = new wxStaticText( this, wxID_ANY, wxT(" r_max"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_paramText7->Wrap( -1 );
 	fgSizer1->Add( m_paramText7, 0, wxALIGN_RIGHT|wxALL, 5 );
 
-	m_paramCtrl7 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_paramCtrl7 = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer1->Add( m_paramCtrl7, 0, wxALL, 5 );
 
 
@@ -132,6 +138,9 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxBoxSizer* bSizer9;
+	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxFlexGridSizer* fgSizer2;
 	fgSizer2 = new wxFlexGridSizer( 0, 3, 0, 0 );
@@ -172,8 +181,12 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	fgSizer2->Add( m_rotateVal3, 0, wxALL, 5 );
 
 
-	bSizer7->Add( fgSizer2, 0, wxALIGN_BOTTOM|wxALL, 5 );
+	bSizer9->Add( fgSizer2, 0, wxALIGN_BOTTOM|wxALL, 5 );
 
+	m_resetAxes = new wxButton( this, wxID_ANY, wxT("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer9->Add( m_resetAxes, 0, wxALIGN_CENTER|wxALL, 5 );
+
+	bSizer7->Add( bSizer9, 1, wxALIGN_BOTTOM, 5 );
 
 	bSizer3->Add( bSizer7, 1, wxEXPAND, 5 );
 
@@ -191,13 +204,14 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_option1->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option1OnRadioButton ), NULL, this );
 	m_option2->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option2OnRadioButton ), NULL, this );
 	m_option3->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option3OnRadioButton ), NULL, this );
+	m_funChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( MyFrame1::m_onFunChoice ), NULL, this );
 	m_paramCtrl1->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl1OnText ), NULL, this );
 	m_paramCtrl2->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl2OnText ), NULL, this );
 	m_paramCtrl3->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl3OnText ), NULL, this );
 	m_paramCtrl4->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl4OnText ), NULL, this );
 	m_paramCtrl5->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl5OnText ), NULL, this );
 	m_paramCtrl6->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl6OnText ), NULL, this );
-	m_paramCtrl7->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl1OnText ), NULL, this );
+	m_paramCtrl7->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl7OnText ), NULL, this );
 	m_pointsJoint->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MyFrame1::m_pointsJointOnCheckBox ), NULL, this );
 	m_saveButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_saveButtonOnButtonClick ), NULL, this );
 	m_rotateSlider1->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( MyFrame1::m_rotateSlider1OnScroll ), NULL, this );
@@ -227,6 +241,7 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_rotateSlider3->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( MyFrame1::m_rotateSlider3OnScroll ), NULL, this );
 	m_rotateSlider3->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( MyFrame1::m_rotateSlider3OnScroll ), NULL, this );
 	m_rotateSlider3->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( MyFrame1::m_rotateSlider3OnScroll ), NULL, this );
+	m_resetAxes->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_onAxesReset ), NULL, this );
 }
 
 MyFrame1::~MyFrame1()
@@ -236,13 +251,14 @@ MyFrame1::~MyFrame1()
 	m_option1->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option1OnRadioButton ), NULL, this );
 	m_option2->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option2OnRadioButton ), NULL, this );
 	m_option3->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MyFrame1::m_option3OnRadioButton ), NULL, this );
+	m_funChoice->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( MyFrame1::m_onFunChoice ), NULL, this );
 	m_paramCtrl1->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl1OnText ), NULL, this );
 	m_paramCtrl2->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl2OnText ), NULL, this );
 	m_paramCtrl3->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl3OnText ), NULL, this );
 	m_paramCtrl4->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl4OnText ), NULL, this );
 	m_paramCtrl5->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl5OnText ), NULL, this );
 	m_paramCtrl6->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl6OnText ), NULL, this );
-	m_paramCtrl7->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl1OnText ), NULL, this );
+	m_paramCtrl7->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl7OnText ), NULL, this );
 	m_pointsJoint->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MyFrame1::m_pointsJointOnCheckBox ), NULL, this );
 	m_saveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_saveButtonOnButtonClick ), NULL, this );
 	m_rotateSlider1->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( MyFrame1::m_rotateSlider1OnScroll ), NULL, this );
@@ -272,5 +288,5 @@ MyFrame1::~MyFrame1()
 	m_rotateSlider3->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( MyFrame1::m_rotateSlider3OnScroll ), NULL, this );
 	m_rotateSlider3->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( MyFrame1::m_rotateSlider3OnScroll ), NULL, this );
 	m_rotateSlider3->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( MyFrame1::m_rotateSlider3OnScroll ), NULL, this );
-
+	m_resetAxes->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_onAxesReset ), NULL, this );
 }
