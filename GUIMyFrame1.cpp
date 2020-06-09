@@ -48,6 +48,8 @@ MyFrame1( parent )
 	
 	///////////////////////////////////////////////////////////////
 
+	// Podzialki odpowiadaja odpowiednio 25%, 50% i 75% dlugosci danej polosi (a w pierwszym sposobie rysowania
+	// wartoscia 5, 10, 15, oczywiscie z odpowiednim znakiem)
 	for (int i = -3; i < 4; ++i)
 	{
 		if (i)
@@ -247,6 +249,7 @@ Matrix GUIMyFrame1::GetRotationMatrix(double rot_x, double rot_y, double rot_z)
 		rotated = false;
 	}
 
+	// Aktualizacja macierzy historii rotacji (o ile jakis obrot faktycznie mial miejsce)
 	if (rotated)
 		m_rotationHistory = m * m_rotationHistory;
 
@@ -262,25 +265,23 @@ void GUIMyFrame1::Repaint()
 	dc.SetBackground(wxBrush(wxColour(255, 255, 255)));
 	dc.Clear();
 
+	// Setting correct label
 	switch (m_chartChoice)
 	{
 		case 1:
 			m_descriptionText->SetLabel(wxT("Spos\u00F3b 1;   f(r, \u03C6, \u03B8) = ") + m_funChoice->GetString(m_funChoice->GetSelection()));
 			break;
-
 		case 2:
 			m_descriptionText->SetLabel(wxT("Spos\u00F3b 2;   f(r, \u03C6, \u03B8) = ") + m_funChoice->GetString(m_funChoice->GetSelection()));
 			break;
-
 		case 3:
 			m_descriptionText->SetLabel(wxT("Spos\u00F3b 3;   f(r, \u03C6, \u03B8) = ") + m_funChoice->GetString(m_funChoice->GetSelection()));
 			break;
-
 		default:
 			break;
 	}
 
-	//Resetowanie ustawien osi wspolrzednych
+	// Resetowanie ustawien osi wspolrzednych
 	if (m_resetAxes) Reset();
 
 	double rot_x = m_rotateSlider1->GetValue();
@@ -293,65 +294,69 @@ void GUIMyFrame1::Repaint()
 	double height = (double)h;
 	double depth = 2.0f;
 
+	// Setting rotation and perspective matrices
 	Matrix rotation = GetRotationMatrix(rot_x, rot_y, rot_z);
 	Matrix perspective = Perspective(width, height, depth);
 
-	//Rysowanie osi wspolrzednych
-	DrawAxes(dc, rotation, perspective);
-
-	/// updating points
-	if (m_phiChanged || m_thetaChanged || m_rChanged || m_funChanged || m_chartChanged)
+	/// updating points if necessary
+	if (m_phiChanged || m_thetaChanged || m_rChanged || m_constChanged || m_epsilonChanged || m_delta_rChanged || m_r_maxChanged || m_funChanged || m_chartChanged)
 	{
 		getPoints();
-		m_phiChanged = m_thetaChanged = m_rChanged = m_funChanged = m_chartChanged = false;
+		m_phiChanged = m_thetaChanged = m_rChanged = m_constChanged = m_epsilonChanged = m_delta_rChanged = m_r_maxChanged = m_funChanged = m_chartChanged = false;
 	}
 
-	/// iterating over points to draw
-	for (auto& v : points) {
-
-		/// calculating on screen position of the point
-		Vector pt{ rotation * v.first };
-		
-		v.first = pt;
-
-		pt = perspective * pt;
-
-		pt.Normalize();
-	
-		/// setting colour and drawing
-		dc.SetPen(wxPen{ v.second });
-
-		/// it's slow as hell so have to look into ways of drawing all points in a single function to speed this up
-		dc.DrawPoint(pt(0), pt(1));
-	}
+	DrawAxes(dc, rotation, perspective);
+	DrawPoints(dc, rotation, perspective);
 
 	m_rotX = rot_x;
 	m_rotY = rot_y;
 	m_rotZ = rot_z;
 }
 
+void GUIMyFrame1::DrawPoints(wxBufferedDC& dc, Matrix rotation, Matrix perspective)
+{
+	/// iterating over points to draw
+	for (auto& v : points) {
+
+		/// calculating on screen position of the point
+		Vector pt{ rotation * v.first };
+
+		v.first = pt;
+
+		pt = perspective * pt;
+
+		pt.Normalize();
+
+		/// setting colour and drawing
+		dc.SetPen(wxPen{ v.second });
+
+		/// it's slow as hell so have to look into ways of drawing all points in a single function to speed this up
+		dc.DrawPoint(pt(0), pt(1));
+	}
+}
+
 void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, Matrix rotation, Matrix perspective)
 {
 	dc.SetPen(wxPen(wxColour(0, 0, 0)));
-	for (int vec = 0; vec < m_axes.size(); vec += 2)
+	for (int i = 0; i < m_axes.size(); i += 2)
 	{
-		Vector begin = m_axes[vec];
-		Vector end = m_axes[vec + 1];
+		Vector begin = m_axes[i];
+		Vector end = m_axes[i + 1];
 
 		begin = rotation * begin;
 		end = rotation * end;
 
-		m_axes[vec] = begin;
-		m_axes[vec + 1] = end;
+		m_axes[i] = begin;
+		m_axes[i + 1] = end;
 
 		begin = perspective * begin;
 		end = perspective * end;
 
-		//Normalizowanie wektorow
+		// Normalizowanie wektorow
 		begin.Normalize();
 		end.Normalize();
 
-		//Rysowanie
+		// Rysowanie
 		dc.DrawLine(begin(0), begin(1), end(0), end(1));
 	}
 
@@ -369,7 +374,7 @@ void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, Matrix rotation, Matrix perspective
 		begin = perspective * begin;
 		end = perspective * end;
 
-		//Normalizowanie wektorow
+		// Normalizowanie wektorow
 		begin.Normalize();
 		end.Normalize();
 
@@ -390,7 +395,7 @@ void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, Matrix rotation, Matrix perspective
 		begin = perspective * begin;
 		end = perspective * end;
 
-		//Normalizowanie wektorow
+		// Normalizowanie wektorow
 		begin.Normalize();
 		end.Normalize();
 
@@ -543,6 +548,8 @@ void GUIMyFrame1::getPoints()
 				/// preparing and pushing point to vector
 				std::pair<Vector, wxColour> pt;
 				double colour{ utility::map(fVal, min, max, 0, 1) };
+				// Dla 1 sposobu rysowania r_max (czyli takie, dla ktorego sfera opiera sie na krancach rysowanego ukladu wspolrzednych)
+				// wynosi 20 -> r trzeba przeskalowac do przedzialu [0, 1]
 				double r1{ utility::map(m_r, 0, 20, 0, 1) };
 				double r2 = colour;
 				
@@ -556,12 +563,15 @@ void GUIMyFrame1::getPoints()
 				}
 				if (m_option2->GetValue())
 				{
+					// Wspolrzedne sa mnozone przez 0.8 w celu uzyskania bardziej czytelnego wykresu
 					pt.first(0) = 0.8f * r2 * sin(aTheta) * cos(aPhi);
 					pt.first(1) = 0.8f * r2 * sin(aTheta) * sin(aPhi);
 					pt.first(2) = 0.8f * r2 * cos(aTheta);
 					pt.second = utility::mapToColour(colour);
 				}
 
+				// To mnozenie jest potrzebne, gdyz w sytuacji takiej, ze uklad wspolrzednych jest juz obrocony, a punkty dopiero zaczynaja
+				// byc wtedy rysowane, to punkty musza "nadgonic" ukl. wsp. o obrot, ktory ten juz wykonal
 				pt.first = m_rotationHistory * pt.first;
 				points.push_back(pt);
 			}
