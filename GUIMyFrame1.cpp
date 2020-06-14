@@ -313,7 +313,7 @@ void GUIMyFrame1::Repaint()
 	m_rotZ = rot_z;
 }
 
-void GUIMyFrame1::DrawPoints(wxBufferedDC& dc, Matrix rotation, Matrix perspective)
+void GUIMyFrame1::DrawPoints(wxBufferedDC& dc, const Matrix& rotation, const Matrix& perspective)
 {
 	/// iterating over points to draw
 	for (auto& v : points) {
@@ -335,10 +335,10 @@ void GUIMyFrame1::DrawPoints(wxBufferedDC& dc, Matrix rotation, Matrix perspecti
 	}
 }
 
-void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, Matrix rotation, Matrix perspective)
+void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, const Matrix& rotation, const Matrix& perspective)
 {
 	dc.SetPen(wxPen(wxColour(0, 0, 0)));
-	for (int i = 0; i < m_axes.size(); i += 2)
+	for (long unsigned i = 0; i < m_axes.size(); i += 2)
 	{
 		Vector begin = m_axes[i];
 		Vector end = m_axes[i + 1];
@@ -360,7 +360,7 @@ void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, Matrix rotation, Matrix perspective
 		dc.DrawLine(begin(0), begin(1), end(0), end(1));
 	}
 
-	for (int i = 0; i < m_arrowheads.size(); i += 2)
+	for (long unsigned i = 0; i < m_arrowheads.size(); i += 2)
 	{
 		Vector begin = m_arrowheads[i];
 		Vector end = m_arrowheads[i + 1];
@@ -381,7 +381,7 @@ void GUIMyFrame1::DrawAxes(wxBufferedDC& dc, Matrix rotation, Matrix perspective
 		dc.DrawLine(begin(0), begin(1), end(0), end(1));
 	}
 
-	for (int i = 0; i < m_segments.size(); i += 2)
+	for (long unsigned i = 0; i < m_segments.size(); i += 2)
 	{
 		Vector begin = m_segments[i];
 		Vector end = m_segments[i + 1];
