@@ -127,9 +127,6 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizer6->Add( fgSizer1, 1, wxALIGN_CENTER|wxALL, 5 );
 
-	m_pointsJoint = new wxCheckBox( this, wxID_ANY, wxT("Po\u0142\u0105cz punkty"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer6->Add( m_pointsJoint, 0, wxALIGN_CENTER|wxALIGN_TOP|wxALL, 5 );
-
 	m_saveButton = new wxButton( this, wxID_ANY, wxT("Zapisz"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer6->Add( m_saveButton, 0, wxALIGN_CENTER|wxALL, 5 );
 
@@ -212,7 +209,6 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_paramCtrl5->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl5OnText ), NULL, this );
 	m_paramCtrl6->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl6OnText ), NULL, this );
 	m_paramCtrl7->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl7OnText ), NULL, this );
-	m_pointsJoint->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MyFrame1::m_pointsJointOnCheckBox ), NULL, this );
 	m_saveButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_saveButtonOnButtonClick ), NULL, this );
 	m_rotateSlider1->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( MyFrame1::m_rotateSlider1OnScroll ), NULL, this );
 	m_rotateSlider1->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( MyFrame1::m_rotateSlider1OnScroll ), NULL, this );
@@ -259,7 +255,6 @@ MyFrame1::~MyFrame1()
 	m_paramCtrl5->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl5OnText ), NULL, this );
 	m_paramCtrl6->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl6OnText ), NULL, this );
 	m_paramCtrl7->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MyFrame1::m_paramCtrl7OnText ), NULL, this );
-	m_pointsJoint->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MyFrame1::m_pointsJointOnCheckBox ), NULL, this );
 	m_saveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_saveButtonOnButtonClick ), NULL, this );
 	m_rotateSlider1->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( MyFrame1::m_rotateSlider1OnScroll ), NULL, this );
 	m_rotateSlider1->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( MyFrame1::m_rotateSlider1OnScroll ), NULL, this );

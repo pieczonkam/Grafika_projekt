@@ -1,7 +1,7 @@
 #include "colour.hpp"
 
 wxColour utility::mapToColour(double v) {
-    // std::cout << "[" << 255*v<< "][" << 0 << "][" << 255*(1 - v) << "]\n";
+   
     return wxColour{ static_cast<unsigned char>(255 * (v)),
                     static_cast<unsigned char>(0),
                     static_cast<unsigned char>(255 * (1 - v)) };
@@ -15,6 +15,6 @@ double utility::map(double v, double e1, double e2, double m1, double m2) {
     else {
         ret = (m2 - m1) * (v - e1) / (e2 - e1) + m1;
     }
-    // std::cout << v << " mapped to " << ret << '\n';
+    
     return ret;
 }

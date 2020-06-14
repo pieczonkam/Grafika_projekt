@@ -34,7 +34,6 @@ class GUIMyFrame1 : public MyFrame1
 		void m_paramCtrl5OnText( wxCommandEvent& event );
 		void m_paramCtrl6OnText( wxCommandEvent& event );
 		void m_paramCtrl7OnText( wxCommandEvent& event );
-		void m_pointsJointOnCheckBox( wxCommandEvent& event );
 		void m_saveButtonOnButtonClick( wxCommandEvent& event );
 		void m_rotateSlider1OnScroll( wxScrollEvent& event );
 		void m_rotateSlider2OnScroll( wxScrollEvent& event );

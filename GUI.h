@@ -59,7 +59,6 @@ class MyFrame1 : public wxFrame
 		wxTextCtrl* m_paramCtrl6;
 		wxStaticText* m_paramText7;
 		wxTextCtrl* m_paramCtrl7;
-		wxCheckBox* m_pointsJoint;
 		wxButton* m_saveButton;
 		wxStaticText* m_rotateText1;
 		wxSlider* m_rotateSlider1;
@@ -85,7 +84,6 @@ class MyFrame1 : public wxFrame
 		virtual void m_paramCtrl5OnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_paramCtrl6OnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_paramCtrl7OnText(wxCommandEvent& event) { event.Skip(); }
-		virtual void m_pointsJointOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveButtonOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_rotateSlider1OnScroll( wxScrollEvent& event ) { event.Skip(); }
 		virtual void m_rotateSlider2OnScroll( wxScrollEvent& event ) { event.Skip(); }

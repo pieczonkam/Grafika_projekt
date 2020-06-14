@@ -163,7 +163,7 @@ void GUIMyFrame1::m_paramCtrl3OnText( wxCommandEvent& event )
 void GUIMyFrame1::m_paramCtrl4OnText( wxCommandEvent& event )
 {
 	m_paramCtrl4->GetValue().ToDouble(&m_const);
-	m_const = true;
+	m_constChanged = true;
 	Repaint();
 }
 
@@ -185,11 +185,6 @@ void GUIMyFrame1::m_paramCtrl7OnText(wxCommandEvent& event)
 {
 	m_paramCtrl7->GetValue().ToDouble(&m_r_max);
 	m_r_maxChanged = true;
-	Repaint();
-}
-
-void GUIMyFrame1::m_pointsJointOnCheckBox( wxCommandEvent& event )
-{
 	Repaint();
 }
 
@@ -330,7 +325,6 @@ void GUIMyFrame1::DrawPoints(wxBufferedDC& dc, Matrix rotation, Matrix perspecti
 		/// setting colour and drawing
 		dc.SetPen(wxPen{ v.second });
 
-		/// it's slow as hell so have to look into ways of drawing all points in a single function to speed this up
 		dc.DrawPoint(pt(0), pt(1));
 	}
 }
@@ -476,52 +470,71 @@ void GUIMyFrame1::Reset()
 	m_resetAxes = false;
 }
 
-void GUIMyFrame1::getPoints() 
+void GUIMyFrame1::getPoints()
 {
-	if (m_option1->GetValue() || m_option2->GetValue() || m_option3->GetValue())
+	bool opt1 = m_option1->GetValue(), opt2 = m_option2->GetValue(), opt3 = m_option3->GetValue();
+
+	if (opt1 || opt2 || opt3)
 	{
 		points.clear();
-		if (m_theta < 1 || m_phi < 1 || m_r < 0)
+
+		if (m_theta < 1 || m_phi < 1)
 			return;
+		if (m_r < 0.0f && (opt1 || opt2))
+			return;
+		if ((m_delta_r <= 0.0f || m_r_max <= 0.0f || m_epsilon < 0.0f) && opt3)
+			return;
+	
+		double r_max = 0.0f, delta_r = 1.0f;
 
 		/// preallocating memory
-		points.reserve(m_phi * m_theta);
-
+		if (opt3)
+		{
+			points.reserve(m_phi * m_theta * (int)(m_r_max / m_delta_r + 0.5f));
+			r_max = m_r_max;
+			delta_r = m_delta_r;
+		}
+		else
+			points.reserve(m_phi * m_theta);
+		
 		/// iteration steps
 		double dTheta{ M_PI / m_theta };
 		double dPhi{ 2 * M_PI / m_phi };
 
 		double min{ 1e8 }, max{ 0 };
 
-		/// finding min/max of a function
-		/// could maybe try do do something with analysis to avoid iterating twice like this
-		for (int i{ 0 }; i < m_theta; ++i) {
-			double aTheta{ i * dTheta };
-			for (int j{ 0 }; j < m_phi; ++j) {
-				double aPhi{ j * dPhi };
+		if (!opt3)
+		{
+			/// finding min/max of a function
+			for (int i{ 0 }; i < m_theta; ++i) {
+				double aTheta{ i * dTheta };
+				for (int j{ 0 }; j < m_phi; ++j) {
+					double aPhi{ j * dPhi };
 
-				double fVal{ 0.0 };
-				switch (funNr()) {
-				case 1:
-					fVal = F1(aTheta, aPhi, m_r);
-					break;
-				case 2:
-					fVal = F2(aTheta, aPhi, m_r);
-					break;
-				case 3:
-					fVal = F3(aTheta, aPhi, m_r);
-					break;
-				default:
-					break;
+					double fVal{ 0.0 };
+					switch (funNr()) {
+					case 1:
+						fVal = F1(aTheta, aPhi, m_r);
+						break;
+					case 2:
+						fVal = F2(aTheta, aPhi, m_r);
+						break;
+					case 3:
+						fVal = F3(aTheta, aPhi, m_r);
+						break;
+					default:
+						break;
+					}
+
+					if (fVal < min)
+						min = fVal;
+					else if (fVal > max)
+						max = fVal;
 				}
-
-				if (fVal < min)
-					min = fVal;
-				else if (fVal > max)
-					max = fVal;
 			}
 		}
 
+		
 		/// creating points and assigning them place in space
 		for (int i{ 0 }; i < m_theta; ++i) {
 			double aTheta{ i * dTheta };
@@ -529,52 +542,83 @@ void GUIMyFrame1::getPoints()
 			for (int j{ 0 }; j < m_phi; ++j) {
 				double aPhi{ j * dPhi };
 
-				double fVal{ 0.0 };
+				for (double r{ 0.0f }; r <= r_max; r += delta_r) {
+					double fVal{ 0.0 };
 
-				switch (funNr()) {
-				case 1:
-					fVal = F1(aTheta, aPhi, m_r);
-					break;
-				case 2:
-					fVal = F2(aTheta, aPhi, m_r);
-					break;
-				case 3:
-					fVal = F3(aTheta, aPhi, m_r);
-					break;
-				default:
-					break;
-				}
+					if (!opt3) {
+						switch (funNr()) {
+						case 1:
+							fVal = F1(aTheta, aPhi, m_r);
+							break;
+						case 2:
+							fVal = F2(aTheta, aPhi, m_r);
+							break;
+						case 3:
+							fVal = F3(aTheta, aPhi, m_r);
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						switch (funNr()) {
+						case 1:
+							fVal = F1(aTheta, aPhi, r);
+							break;
+						case 2:
+							fVal = F2(aTheta, aPhi, r);
+							break;
+						case 3:
+							fVal = F3(aTheta, aPhi, r);
+							break;
+						default:
+							break;
+						}
 
-				/// preparing and pushing point to vector
-				std::pair<Vector, wxColour> pt;
-				double colour{ utility::map(fVal, min, max, 0, 1) };
-				// Dla 1 sposobu rysowania r_max (czyli takie, dla ktorego sfera opiera sie na krancach rysowanego ukladu wspolrzednych)
-				// wynosi 20 -> r trzeba przeskalowac do przedzialu [0, 1]
-				double r1{ utility::map(m_r, 0, 20, 0, 1) };
-				double r2 = colour;
-				
-				/// spherical to cartesian coordinates
-				if (m_option1->GetValue())
-				{
-					pt.first(0) = r1 * sin(aTheta) * cos(aPhi);
-					pt.first(1) = r1 * sin(aTheta) * sin(aPhi);
-					pt.first(2) = r1 * cos(aTheta);
-					pt.second = utility::mapToColour(colour);
-				}
-				if (m_option2->GetValue())
-				{
-					// Wspolrzedne sa mnozone przez 0.8 w celu uzyskania bardziej czytelnego wykresu
-					pt.first(0) = 0.8f * r2 * sin(aTheta) * cos(aPhi);
-					pt.first(1) = 0.8f * r2 * sin(aTheta) * sin(aPhi);
-					pt.first(2) = 0.8f * r2 * cos(aTheta);
-					pt.second = utility::mapToColour(colour);
-				}
+						if (!(fVal > m_const - m_epsilon && fVal < m_const + m_epsilon))
+							continue;
+					}
+					/// preparing and pushing point to vector
+					std::pair<Vector, wxColour> pt;
+					double colour{ utility::map(fVal, min, max, 0, 1) };
+					
+					/// spherical to cartesian coordinates
+					if (opt1) {
+						// Rzutowanie r z [0, 20] do [0, 1]
+						double r1{ utility::map(m_r, 0, 20, 0, 1) };
 
-				// To mnozenie jest potrzebne, gdyz w sytuacji takiej, ze uklad wspolrzednych jest juz obrocony, a punkty dopiero zaczynaja
-				// byc wtedy rysowane, to punkty musza "nadgonic" ukl. wsp. o obrot, ktory ten juz wykonal
-				pt.first = m_rotationHistory * pt.first;
-				points.push_back(pt);
+						pt.first(0) = r1 * sin(aTheta) * cos(aPhi);
+						pt.first(1) = r1 * sin(aTheta) * sin(aPhi);
+						pt.first(2) = r1 * cos(aTheta);
+						pt.second = utility::mapToColour(colour);
+					}
+					else if (opt2) {
+						// r zalezy od wartosci funkcji (reprezentowanej przez kolor punktu)
+						double r2 = colour;
+
+						// Wspolrzedne sa mnozone przez 0.8 w celu uzyskania bardziej czytelnego wykresu
+						pt.first(0) = 0.8f * r2 * sin(aTheta) * cos(aPhi);
+						pt.first(1) = 0.8f * r2 * sin(aTheta) * sin(aPhi);
+						pt.first(2) = 0.8f * r2 * cos(aTheta);
+						pt.second = utility::mapToColour(colour);
+					}
+					else {
+						// Rzutowanie r z [0, r_max] do [0, 1]
+						double r3{ utility::map(r, 0, r_max, 0, 1) };
+
+						pt.first(0) = r3 * sin(aTheta) * cos(aPhi);
+						pt.first(1) = r3 * sin(aTheta) * sin(aPhi);
+						pt.first(2) = r3 * cos(aTheta);
+						pt.second = wxColour(0, 0, 255);
+					}
+
+					// To mnozenie jest potrzebne, gdyz w sytuacji takiej, ze uklad wspolrzednych jest juz obrocony, a punkty dopiero zaczynaja
+					// byc wtedy rysowane, to punkty musza "nadgonic" ukl. wsp. o obrot, ktory ten juz wykonal
+					pt.first = m_rotationHistory * pt.first;
+					points.push_back(pt);
+				}
 			}
+			
 		}
 	}
 	return;
